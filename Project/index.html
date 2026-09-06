@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ORION FINANCIAL — Security Control Center</title>
+  <meta name="description"
+    content="Orion Financial Security Control Center - Cyber Security Incident Response Terminal">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <!-- CRT Visual Filters -->
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <div id="app">
+    <div class="terminal-frame">
+
+      <!-- Top Persistent System Header (Shown when authenticated in Control Center per 3.png) -->
+      <header class="system-header" id="system-header" style="display: none;">
+        <div class="brand-area">
+          <div class="brand-shield-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              <polyline points="9 12 11 14 15 10" />
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h1>SECURITY CONTROL CENTER</h1>
+            <div class="sub-brand">ORION FINANCIAL // SEC-NODE-09</div>
+          </div>
+        </div>
+
+        <div class="hud-controls">
+          <!-- Countdown Timer per 3.png -->
+          <div class="hud-timer-container" id="hud-timer-container">
+            <span class="hud-timer-icon">⏱</span>
+            <span class="hud-timer-label">TIME REMAINING</span>
+            <span class="hud-timer-value" id="hud-timer">20:00</span>
+          </div>
+
+          <!-- Session Status Pill per 3.png -->
+          <div class="hud-session-pill" id="hud-session-status">
+            <span class="status-dot" id="hud-status-dot"></span>
+            <span id="hud-status-text">SESSION ENCRYPTED</span>
+          </div>
+
+          <!-- Operator Name Display per 3.png -->
+          <div class="hud-operator-name" id="hud-operator-name">SAMUEL REYES</div>
+
+          <!-- LOGOUT Button per 3.png -->
+          <button type="button" id="btn-hud-logout" class="btn-hud-logout" title="Logout of Security Control Center">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            <span>LOGOUT</span>
+          </button>
+
+          <!-- Audio Toggle in Header -->
+          <button id="btn-audio-toggle" class="audio-toggle-btn active" title="Toggle Terminal Audio"
+            aria-label="Toggle Sound">
+            <span id="audio-icon">🔊</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Floating Audio Toggle on Login View -->
+      <div class="login-audio-bar" id="login-audio-bar">
+        <button id="btn-audio-toggle-login" class="audio-toggle-btn active" title="Toggle Terminal Audio"
+          aria-label="Toggle Sound">
+          <span id="audio-icon-login">🔊</span>
+          <span id="audio-label-login">AUDIO: ON</span>
+        </button>
+      </div>
+
+      <!-- MAIN CONTENT VIEW ROUTER -->
+      <main id="main-content">
+
+        <!-- 1. LOGIN SCREEN (SECURE ACCESS PORTAL per 1.png & 2.png) -->
+        <section id="view-login" class="view-container active">
+          <div class="portal-screen-wrap">
+
+            <!-- Portal Header -->
+            <div class="portal-header">
+              <div class="portal-shield-icon" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00ff88" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  <polyline points="9 12 11 14 15 10" />
+                </svg>
+              </div>
+              <h2 class="portal-title">SECURE ACCESS PORTAL</h2>
+              <div class="portal-subtitle">AUTHORIZED PERSONNEL ONLY</div>
+            </div>
+
+            <!-- Start Mission Option (per 1.png) -->
+            <div id="mission-start-wrap" class="mission-start-wrap">
+              <button type="button" id="btn-start-mission" class="btn-start-mission">
+                <span class="play-icon">▷</span>
+                <span>START MISSION</span>
+              </button>
+              <div class="mission-start-note">LAUNCHES THE 20:00 COUNTDOWN — IT NEVER RESETS</div>
+            </div>
+
+            <!-- Active Reverse Countdown Timer (per 2.png) -->
+            <div id="mission-active-timer" class="mission-active-timer" style="display: none;">
+              <span class="timer-clock-icon">⏱</span>
+              <span class="timer-label">TIME REMAINING</span>
+              <span class="timer-countdown" id="login-countdown">20:00</span>
+            </div>
+
+            <!-- Authentication Card (per 1.png & 2.png) -->
+            <div class="login-card corner-brackets">
+              <div class="card-top-bar">
+                <span class="card-top-title">AUTHENTICATION</span>
+                <span class="secure-conn-pill">
+                  <span class="status-dot"></span>
+                  <span>SECURE CONNECTION</span>
+                </span>
+              </div>
+
+              <form id="login-form" autocomplete="off" onsubmit="return false;">
+                <div class="form-group">
+                  <label for="login-username">OPERATOR ID (USERNAME)</label>
+                  <input type="text" id="login-username" class="input-terminal" placeholder="ENTER USERNAME" required
+                    spellcheck="false">
+                </div>
+
+                <div class="form-group">
+                  <label for="login-password">ACCESS CODE</label>
+                  <div class="password-input-wrapper">
+                    <input type="password" id="login-password" class="input-terminal" placeholder="ENTER PASSCODE"
+                      required>
+                    <button type="button" id="btn-toggle-password" class="btn-password-toggle"
+                      title="Show/Hide Passcode" aria-label="Toggle Passcode Visibility">
+                      <svg id="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <button type="submit" id="btn-login-submit" class="btn-authenticate">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                  <span>AUTHENTICATE</span>
+                </button>
+
+                <div class="clearance-link">
+                  <span>REQUEST NEW CLEARANCE →</span>
+                </div>
+
+                <div id="login-feedback" class="feedback-banner" role="alert"></div>
+              </form>
+            </div>
+
+            <!-- System Log (per 1.png & 2.png) -->
+            <div class="portal-system-log">
+              <div class="log-title">&gt;_ SYSTEM LOG</div>
+              <div class="log-line">&gt; SYSTEM STATUS: ONLINE</div>
+              <div class="log-line">&gt; CONNECTION: ENCRYPTED (TLS)</div>
+              <div class="log-line">&gt; SESSION KEY: NEGOTIATED</div>
+              <div class="log-line" id="log-status-line">&gt; AWAITING OPERATOR CREDENTIALS...</div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- 2. MAIN DASHBOARD SCREEN -->
+        <section id="view-dashboard" class="view-container">
+          <div class="dashboard-view">
+
+            <!-- System Status Panel -->
+            <div class="system-status-panel corner-brackets">
+              <div class="status-item">
+                <span class="status-label">&gt; OPERATOR:</span>
+                <span class="status-value highlight-cyan" id="dash-operator-display">Samuel Reyes</span>
+              </div>
+              <div class="status-item">
+                <span class="status-label">&gt; CLEARANCE:</span>
+                <span class="status-value">Level 3</span>
+              </div>
+              <div class="status-item">
+                <span class="status-label">&gt; THREAT LEVEL:</span>
+                <span class="status-value highlight-red">CRITICAL</span>
+              </div>
+              <div class="status-item">
+                <span class="status-label">&gt; SERVER AUTH:</span>
+                <span class="status-value highlight-green">ACTIVE</span>
+              </div>
+              <div class="status-item">
+                <span class="status-label">&gt; ENCRYPTED SESSION:</span>
+                <span class="status-value highlight-green">ACTIVE</span>
+              </div>
+              <div class="status-item">
+                <span class="status-label">&gt; RESTRICTED MODULES:</span>
+                <span class="status-value highlight-red" id="restricted-modules-count">3 LOCKED</span>
+              </div>
+            </div>
+
+            <!-- Module Grid -->
+            <div class="module-grid">
+
+              <!-- Module 01 Card -->
+              <article class="module-card corner-brackets" id="card-module-1">
+                <div class="module-card-header">
+                  <div class="module-meta">
+                    <span class="module-index">MODULE 01</span>
+                    <h2 class="module-title">Transaction History</h2>
+                  </div>
+                  <span class="status-badge badge-restricted" id="badge-module-1">RESTRICTED</span>
+                </div>
+                <p class="module-desc">Analyze flagged multi-bank ledger transfers to discover anomalous insider routing
+                  patterns.</p>
+                <div class="module-footer">
+                  <span class="table-meta-count">SECURITY LEVEL: HIGH</span>
+                  <button class="btn-open-module" id="btn-open-mod-1">OPEN MODULE →</button>
+                </div>
+              </article>
+
+              <!-- Module 02 Card -->
+              <article class="module-card corner-brackets" id="card-module-2">
+                <div class="module-card-header">
+                  <div class="module-meta">
+                    <span class="module-index">MODULE 02</span>
+                    <h2 class="module-title">Employee ID</h2>
+                  </div>
+                  <span class="status-badge badge-authorized" id="badge-module-2">AUTHORIZED</span>
+                </div>
+                <p class="module-desc">Review investigator dossier, credential tokens, department clearance, and
+                  security privileges.</p>
+                <div class="module-footer">
+                  <span class="table-meta-count">SECURITY LEVEL: GENERAL</span>
+                  <button class="btn-open-module" id="btn-open-mod-2">OPEN MODULE →</button>
+                </div>
+              </article>
+
+              <!-- Module 03 Card -->
+              <article class="module-card corner-brackets" id="card-module-3">
+                <div class="module-card-header">
+                  <div class="module-meta">
+                    <span class="module-index">MODULE 03</span>
+                    <h2 class="module-title">Decryption Code</h2>
+                  </div>
+                  <span class="status-badge badge-restricted" id="badge-module-3">RESTRICTED</span>
+                </div>
+                <p class="module-desc">Access the secured archival vault buffer to recover the primary encryption
+                  override cipher.</p>
+                <div class="module-footer">
+                  <span class="table-meta-count">SECURITY LEVEL: CLASSIFIED</span>
+                  <button class="btn-open-module" id="btn-open-mod-3">OPEN MODULE →</button>
+                </div>
+              </article>
+
+              <!-- Module 04 Card -->
+              <article class="module-card corner-brackets" id="card-module-4">
+                <div class="module-card-header">
+                  <div class="module-meta">
+                    <span class="module-index">MODULE 04</span>
+                    <h2 class="module-title">Decrypt</h2>
+                  </div>
+                  <span class="status-badge badge-authorized" id="badge-module-4">AUTHORIZED</span>
+                </div>
+                <p class="module-desc">Execute system-wide master cipher payload to terminate breach and contain
+                  financial exfiltration.</p>
+                <div class="module-footer">
+                  <span class="table-meta-count">SECURITY LEVEL: ROOT</span>
+                  <button class="btn-open-module" id="btn-open-mod-4">OPEN MODULE →</button>
+                </div>
+              </article>
+
+            </div>
+
+          </div>
+        </section>
+
+      </main>
+
+      <!-- Persistent Footer -->
+      <footer class="system-footer">
+        <div>ORION FINANCIAL INC. // CYBER DEFENSE DIRECTIVE</div>
+        <div>SESSION ENCRYPTION: SHA-512 SECURE</div>
+      </footer>
+
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODALS & POPUPS
+       ========================================================================== -->
+
+  <!-- LOGIN SUCCESS POPUP MODAL -->
+  <div id="modal-login-success" class="fullscreen-overlay">
+    <div class="alert-card corner-brackets" role="dialog" aria-labelledby="login-success-title">
+      <div class="login-badge"
+        style="color: var(--color-green); border-color: var(--color-green-dim); background: var(--color-green-bg);">
+        ✓ IDENTITY CONFIRMED
+      </div>
+      <h2 id="login-success-title" style="color: var(--color-green);">ACCESS GRANTED</h2>
+      <div style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 8px;">EMPLOYEE VERIFIED: EMMA JOSEPH</div>
+      <div style="font-size: 0.75rem; color: var(--color-cyan); letter-spacing: 2px;">SECURITY STATUS: AUTHORIZED</div>
+
+      <div class="alert-clue-quote">
+        "THE NEXT CLUE IS BEHIND THE WALL STREET."
+      </div>
+
+      <button id="btn-enter-control-center" class="btn-terminal" style="margin-top: 20px;">
+        <span>[ ENTER SECURITY CONTROL CENTER ]</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MODULE 01 MODAL: TRANSACTION HISTORY -->
+  <div id="modal-module-1" class="modal-overlay">
+    <div class="modal-content modal-large corner-brackets">
+      <div class="modal-header">
+        <div>
+          <h3>MODULE 01 — TRANSACTION HISTORY</h3>
+          <div class="sub-header" id="mod1-header-status">LEDGER ANALYSIS ENGINE</div>
+        </div>
+        <button class="btn-close-modal" id="btn-close-mod-1" title="Close Module">✕</button>
+      </div>
+
+      <!-- State A: Restricted Access Code Prompt -->
+      <div id="mod1-locked-view">
+        <div style="padding: 20px 0; text-align: center;">
+          <div class="login-badge" style="margin-bottom: 20px;">TRANSACTION HISTORY — ACCESS RESTRICTED</div>
+          <p style="color: var(--text-dim); margin-bottom: 24px;">AUTHORIZATION PASSCODE REQUIRED TO UNLOCK TRANSACTION
+            LEDGERS</p>
+
+          <form id="form-mod1-access" onsubmit="return false;" style="max-width: 420px; margin: 0 auto;">
+            <div class="form-group">
+              <label for="input-mod1-access">ACCESS CODE REQUIRED</label>
+              <input type="text" id="input-mod1-access" class="input-terminal" placeholder="ENTER 5-DIGIT CODE"
+                autocomplete="off">
+            </div>
+            <button type="submit" id="btn-mod1-access-verify" class="btn-terminal">VERIFY ACCESS CODE</button>
+            <div id="feedback-mod1-access" class="feedback-banner" role="alert"></div>
+          </form>
+        </div>
+      </div>
+
+      <!-- State B: Unlocked Transaction Ledger Table & Investigation Form -->
+      <div id="mod1-unlocked-view" style="display: none;">
+        <div class="table-toolbar">
+          <div class="table-search-box">
+            <span>🔍</span>
+            <input type="text" id="input-tx-search" placeholder="Search ledger by Employee, Bank, Ref ID...">
+          </div>
+          <div class="table-meta-count" id="tx-records-count">SHOWING 24 RECORDS</div>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="cyber-table" id="transaction-table">
+            <thead>
+              <tr>
+                <th data-sort="time">TIME ⇕</th>
+                <th data-sort="employee">EMPLOYEE ⇕</th>
+                <th data-sort="amount">AMOUNT ⇕</th>
+                <th data-sort="bank">BANK ⇕</th>
+                <th data-sort="ref">REFERENCE ID ⇕</th>
+                <th data-sort="status">STATUS ⇕</th>
+              </tr>
+            </thead>
+            <tbody id="transaction-tbody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODULE 02 MODAL: EMPLOYEE ID DOSSIER -->
+  <div id="modal-module-2" class="modal-overlay">
+    <div class="modal-content corner-brackets">
+      <div class="modal-header">
+        <div>
+          <h3>MODULE 02 — EMPLOYEE ID</h3>
+          <div class="sub-header">CLEARANCE CREDENTIAL DOSSIER</div>
+        </div>
+        <button class="btn-close-modal" id="btn-close-mod-2" title="Close Module">✕</button>
+      </div>
+
+      <div class="dossier-card">
+        <div class="dossier-photo">
+          <div class="dossier-photo-avatar">👤</div>
+          <div class="dossier-stamp">ACTIVE</div>
+        </div>
+        <div class="dossier-details">
+          <div class="dossier-row">
+            <span class="dossier-label">AUTHENTICATED:</span>
+            <span class="dossier-val highlight-green">EMPLOYEE</span>
+          </div>
+          <div class="dossier-row">
+            <span class="dossier-label">NAME:</span>
+            <span class="dossier-val">EMMA JOSEPH</span>
+          </div>
+          <div class="dossier-row">
+            <span class="dossier-label">EMPLOYEE ID:</span>
+            <span class="dossier-val highlight-cyan">EMP-44</span>
+          </div>
+          <div class="dossier-row">
+            <span class="dossier-label">DEPARTMENT:</span>
+            <span class="dossier-val">FINANCE</span>
+          </div>
+          <div class="dossier-row">
+            <span class="dossier-label">CLEARANCE:</span>
+            <span class="dossier-val">LEVEL 3</span>
+          </div>
+          <div class="dossier-row">
+            <span class="dossier-label">ACCOUNT STATUS:</span>
+            <span class="dossier-val highlight-green">VERIFIED</span>
+          </div>
+        </div>
+      </div>
+
+      <button id="btn-back-mod-2" class="btn-terminal">
+        <span>[ BACK TO CONTROL CENTER ]</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MODULE 03 MODAL: DECRYPTION CODE -->
+  <div id="modal-module-3" class="modal-overlay">
+    <div class="modal-content corner-brackets">
+      <div class="modal-header">
+        <div>
+          <h3>MODULE 03 — DECRYPTION CODE</h3>
+          <div class="sub-header">VAULT CIPHER ARCHIVE</div>
+        </div>
+        <button class="btn-close-modal" id="btn-close-mod-3" title="Close Module">✕</button>
+      </div>
+
+      <!-- State A: Vault Verification Form -->
+      <div id="mod3-locked-view">
+        <div style="padding: 20px 0; text-align: center;">
+          <div class="login-badge" style="margin-bottom: 20px;">DECRYPTION MODULE — ACCESS RESTRICTED</div>
+          <p style="color: var(--text-dim); margin-bottom: 24px;">VAULT VERIFICATION PASSPHRASE REQUIRED TO ACCESS
+            CIPHER BUFFER</p>
+
+          <form id="form-mod3-access" onsubmit="return false;" style="max-width: 420px; margin: 0 auto;">
+            <div class="form-group">
+              <label for="input-mod3-access">VAULT VERIFICATION REQUIRED</label>
+              <input type="text" id="input-mod3-access" class="input-terminal" placeholder="ENTER PASSPHRASE"
+                autocomplete="off">
+            </div>
+            <button type="submit" id="btn-mod3-access-verify" class="btn-terminal">VERIFY VAULT KEY</button>
+            <div id="feedback-mod3-access" class="feedback-banner" role="alert"></div>
+          </form>
+        </div>
+      </div>
+
+      <!-- State B: Decryption Code Revealed -->
+      <div id="mod3-unlocked-view" style="display: none;">
+        <div style="text-align: center; padding: 10px 0;">
+          <div class="status-badge badge-completed" style="margin-bottom: 16px;">DECRYPTION FILE RECOVERED</div>
+          <div class="code-display-box">
+            <div class="code-label">PRIMARY DECRYPTION CIPHER</div>
+            <div class="cipher-code-container">
+              <span class="secret-code" id="revealed-cipher">ORION-7X4-29Q</span>
+              <button type="button" id="btn-copy-cipher" class="btn-copy-cipher"
+                title="Copy Decryption Code to Clipboard" aria-label="Copy cipher to clipboard">
+                <svg id="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span id="copy-status-text">COPY</span>
+              </button>
+            </div>
+            <div id="copy-toast" class="copy-toast" style="display: none;" role="status" aria-live="polite">✓ CIPHER
+              COPIED TO CLIPBOARD</div>
+          </div>
+          <button id="btn-back-mod-3" class="btn-terminal">
+            <span>[ RETURN TO CONTROL CENTER ]</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODULE 04 MODAL: DECRYPT -->
+  <div id="modal-module-4" class="modal-overlay">
+    <div class="modal-content corner-brackets">
+      <div class="modal-header">
+        <div>
+          <h3>MODULE 04 — MASTER DECRYPT</h3>
+          <div class="sub-header">FINAL PAYLOAD OVERRIDE</div>
+        </div>
+        <button class="btn-close-modal" id="btn-close-mod-4" title="Close Module">✕</button>
+      </div>
+
+      <!-- State A: Gated / Locked State -->
+      <div id="mod4-locked-view" style="text-align: center; padding: 24px 0;">
+        <div class="login-badge">DECRYPTION MODULE LOCKED</div>
+        <div style="margin: 24px 0; color: var(--color-red); font-size: 1.1rem; letter-spacing: 2px;">
+          RECOVER THE DECRYPTION CODE FIRST.
+        </div>
+        <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 24px;">
+          You must authorize and extract the cipher token from Module 03 prior to master override execution.
+        </p>
+        <button class="btn-terminal-secondary" id="btn-mod4-locked-close">CLOSE MODULE</button>
+      </div>
+
+      <!-- State B: Final Decryption Input State -->
+      <div id="mod4-unlocked-view" style="display: none;">
+        <div style="text-align: center; padding: 10px 0;">
+          <div class="login-badge"
+            style="color: var(--color-cyan); border-color: var(--color-cyan-dim); background: var(--color-cyan-bg); margin-bottom: 16px;">
+            FINAL DECRYPTION SEQUENCE
+          </div>
+          <p style="color: var(--text-dim); margin-bottom: 24px;">
+            ENTER MASTER RECOVERED CODE TO NEUTRALIZE SYSTEM COMPROMISE
+          </p>
+
+          <form id="form-mod4-decrypt" onsubmit="return false;" style="max-width: 440px; margin: 0 auto;">
+            <div class="form-group">
+              <label for="input-mod4-code">ENTER RECOVERED CODE</label>
+              <input type="text" id="input-mod4-code" class="input-terminal" placeholder="ORION-XXX-XXX"
+                autocomplete="off" style="text-align: center; font-size: 1.2rem; letter-spacing: 2px;">
+            </div>
+            <button type="submit" id="btn-mod4-decrypt-submit" class="btn-terminal">
+              <span>DECRYPT &amp; CONTAIN BREACH</span>
+              <span>⚡</span>
+            </button>
+            <div id="feedback-mod4-decrypt" class="feedback-banner" role="alert"></div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 8. FINAL CONGRATULATIONS SCREEN (VICTORY) -->
+  <div id="screen-victory" class="fullscreen-overlay">
+    <div class="alert-card victory corner-brackets" role="dialog" aria-labelledby="victory-title">
+      <div class="status-badge badge-completed" style="margin-bottom: 14px;">STATUS: INCIDENT RESOLVED</div>
+      <h2 id="victory-title">CONGRATULATIONS</h2>
+      <div style="font-size: 1.1rem; color: var(--text-bright); letter-spacing: 2px; margin-bottom: 4px;">
+        ORION FINANCIAL SECURITY BREACH CONTAINED
+      </div>
+      <div style="font-size: 0.85rem; color: var(--color-green-dim); letter-spacing: 3px; margin-bottom: 20px;">
+        CASE CLOSED
+      </div>
+
+      <div class="stats-summary-grid">
+        <div>
+          <div class="stat-item-label">LEAD INVESTIGATOR</div>
+          <div class="stat-item-val">EMMA JOSEPH</div>
+        </div>
+        <div>
+          <div class="stat-item-label">TRANSACTION TRAIL</div>
+          <div class="stat-item-val">RECOVERED</div>
+        </div>
+        <div>
+          <div class="stat-item-label">SECURE VAULT</div>
+          <div class="stat-item-val">ACCESSED</div>
+        </div>
+        <div>
+          <div class="stat-item-label">BREACH DECRYPTION</div>
+          <div class="stat-item-val">SUCCESSFUL</div>
+        </div>
+      </div>
+
+      <div style="font-size: 0.8rem; color: var(--text-dim); letter-spacing: 2px;">MISSION COMPLETED IN:</div>
+      <div class="time-hero" id="victory-elapsed-time">16:42</div>
+
+      <button id="btn-restart-victory" class="btn-terminal" style="margin-top: 10px;">
+        <span>↻ RESTART MISSION</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 9. MISSION FAILED SCREEN -->
+  <div id="screen-failed" class="fullscreen-overlay">
+    <div class="alert-card failure corner-brackets" role="dialog" aria-labelledby="failed-title">
+      <div class="status-badge"
+        style="background: var(--color-red-bg); color: var(--color-red); border: 1px solid var(--color-red); margin-bottom: 14px;">
+        CRITICAL FAILURE
+      </div>
+      <h2 id="failed-title">MISSION FAILED</h2>
+      <div
+        style="font-size: 1.4rem; color: var(--color-red); letter-spacing: 4px; margin-bottom: 12px; font-weight: 700;">
+        TIME EXPIRED
+      </div>
+      <div style="font-size: 0.95rem; color: var(--text-bright); letter-spacing: 2px; margin-bottom: 6px;">
+        ORION FINANCIAL SECURITY SYSTEM LOCKED.
+      </div>
+      <div style="font-size: 0.85rem; color: var(--text-dim); letter-spacing: 3px; margin-bottom: 24px;">
+        CASE TERMINATED.
+      </div>
+
+      <button id="btn-restart-failed" class="btn-terminal"
+        style="border-color: var(--color-red); color: var(--color-red); background: var(--color-red-bg);">
+        <span>↻ RESTART MISSION</span>
+      </button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
