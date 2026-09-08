@@ -578,21 +578,35 @@
     }
   }
 
-  function handleLogout() {
+ function handleLogout() {
     audio.playClick();
-    // Return to login screen. If the 20-minute mission countdown is active, it keeps running per 2.png
+    
+    // 1. End the secure session and switch views
     state.sessionActive = false;
     state.view = 'login';
-    if (state.timerSecondsLeft <= 0) {
-      stopTimer();
-      state.missionStarted = false;
-      state.timerSecondsLeft = GAME_CONSTANTS.TOTAL_DURATION_SEC;
-      state.timerEndTimestamp = null;
-    }
+
+    // BUG FIX: Removed stopTimer() and all timer reset variables here.
+    // The mission is still active, and the timer will keep running!
+
+    // 2. (Optional) Reset game progress. 
+    // If you want players to lose their module progress on logout, keep this:
+    state.modules = JSON.parse(JSON.stringify(defaultState.modules));
+    state.gameWon = false;
+    state.gameFailed = false;
+
+    currentTxData = [...TRANSACTION_RECORDS];
+    currentSort = { col: null, asc: true };
+
+    // 3. Clear the login form
+    if (DOM.inputLoginUsername) DOM.inputLoginUsername.value = '';
+    if (DOM.inputLoginPassword) DOM.inputLoginPassword.value = '';
+    if (DOM.loginFeedback) DOM.loginFeedback.style.display = 'none';
+
     closeAllModals();
     saveState();
     renderApp();
   }
+
 
   function handleTogglePassword() {
     audio.playClick();
