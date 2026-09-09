@@ -53,7 +53,7 @@
 
         osc.start();
         osc.stop(this.ctx.currentTime + 0.03);
-      } catch (e) {}
+      } catch (e) { }
     }
 
     playGrant() {
@@ -79,7 +79,7 @@
           osc.start(this.ctx.currentTime + idx * 0.07);
           osc.stop(this.ctx.currentTime + idx * 0.07 + 0.25);
         });
-      } catch (e) {}
+      } catch (e) { }
     }
 
     playDeny() {
@@ -102,7 +102,7 @@
 
         osc.start();
         osc.stop(this.ctx.currentTime + 0.28);
-      } catch (e) {}
+      } catch (e) { }
     }
 
     playVictory() {
@@ -135,7 +135,7 @@
           osc.stop(time + note.d);
           time += note.d * 0.85;
         });
-      } catch (e) {}
+      } catch (e) { }
     }
 
     playWarningTick() {
@@ -157,7 +157,7 @@
 
         osc.start();
         osc.stop(this.ctx.currentTime + 0.05);
-      } catch (e) {}
+      } catch (e) { }
     }
   }
 
@@ -194,7 +194,7 @@
   const GAME_CONSTANTS = {
     TOTAL_DURATION_SEC: 20 * 60, // 20:00 = 1200 seconds
     CREDENTIALS: {
-      USERNAME: 'EMMA',
+      USERNAME: 'EMMA JOSEPH',
       PASSWORD: '5831'
     },
     CODES: {
@@ -369,7 +369,7 @@
     // This prevents stale dashboard states on page reload.
     try {
       sessionStorage.removeItem(GAME_CONSTANTS.STORAGE_KEY);
-    } catch (e) {}
+    } catch (e) { }
     state = JSON.parse(JSON.stringify(defaultState));
   }
 
@@ -578,18 +578,17 @@
     }
   }
 
- function handleLogout() {
+  function handleLogout() {
     audio.playClick();
-    
-    // 1. End the secure session and switch views
+    // Stop the countdown timer and reset to Start Mission view
+    stopTimer();
     state.sessionActive = false;
+    state.missionStarted = false;
+    state.timerRunning = false;
+    state.timerSecondsLeft = GAME_CONSTANTS.TOTAL_DURATION_SEC;
+    state.timerEndTimestamp = null;
+    state.elapsedSeconds = 0;
     state.view = 'login';
-
-    // BUG FIX: Removed stopTimer() and all timer reset variables here.
-    // The mission is still active, and the timer will keep running!
-
-    // 2. (Optional) Reset game progress. 
-    // If you want players to lose their module progress on logout, keep this:
     state.modules = JSON.parse(JSON.stringify(defaultState.modules));
     state.gameWon = false;
     state.gameFailed = false;
@@ -597,7 +596,6 @@
     currentTxData = [...TRANSACTION_RECORDS];
     currentSort = { col: null, asc: true };
 
-    // 3. Clear the login form
     if (DOM.inputLoginUsername) DOM.inputLoginUsername.value = '';
     if (DOM.inputLoginPassword) DOM.inputLoginPassword.value = '';
     if (DOM.loginFeedback) DOM.loginFeedback.style.display = 'none';
@@ -606,7 +604,6 @@
     saveState();
     renderApp();
   }
-
 
   function handleTogglePassword() {
     audio.playClick();
@@ -696,7 +693,7 @@
         if (DOM.loginFeedback) DOM.loginFeedback.style.display = 'none';
         if (DOM.inputLoginUsername) DOM.inputLoginUsername.value = '';
         if (DOM.inputLoginPassword) DOM.inputLoginPassword.value = '';
-        
+
         // Show Login Success Popup modal
         if (DOM.modalLoginSuccess) DOM.modalLoginSuccess.classList.add('active');
       }, 400);
@@ -719,7 +716,7 @@
     DOM.modalLoginSuccess.classList.remove('active');
     state.sessionActive = true;
     state.view = 'dashboard';
-    
+
     // Ensure timer is running upon entering dashboard
     if (!state.timerRunning) {
       startTimer();
@@ -739,7 +736,7 @@
 
     records.forEach(tx => {
       const tr = document.createElement('tr');
-      
+
       let flagClass = 'tx-status-flag processed';
       if (tx.status === 'FLAGGED') flagClass = 'tx-status-flag flagged';
       if (tx.status === 'PENDING') flagClass = 'tx-status-flag pending';
@@ -759,7 +756,7 @@
   function openModule1() {
     audio.playClick();
     DOM.modalMod1.classList.add('active');
-    
+
     if (state.modules.mod1.accessUnlocked || state.modules.mod1.completed) {
       DOM.mod1LockedView.style.display = 'none';
       DOM.mod1UnlockedView.style.display = 'block';
@@ -1009,7 +1006,7 @@
             setTimeout(() => { if (DOM.copyToast) DOM.copyToast.style.display = 'none'; }, 400);
           }
         }, 2000);
-      } catch(err) {}
+      } catch (err) { }
     });
   }
 
@@ -1075,7 +1072,7 @@
   function restartMission() {
     audio.playClick();
     stopTimer();
-    
+
     // Reset state fully to initial defaults
     state = JSON.parse(JSON.stringify(defaultState));
     saveState();

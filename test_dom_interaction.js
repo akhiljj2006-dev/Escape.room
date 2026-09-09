@@ -187,8 +187,9 @@ console.log('\n--- Test 5: Clicking LOGOUT button in Top Right ---');
 elements['btn-hud-logout'].click();
 assert(elements['system-header'].style.display === 'none', 'Header should hide on login view');
 assert(elements['view-login'].classList.contains('active'), 'Login view should be active');
-assert(elements['mission-active-timer'].style.display === 'flex', 'Active countdown should still display on login screen per 2.png');
-console.log('✓ LOGOUT successfully returned to login screen with active timer per 2.png.');
+assert(elements['mission-start-wrap'].style.display === 'block', 'Start Mission button should be visible after logout');
+assert(elements['mission-active-timer'].style.display === 'none', 'Active countdown should be stopped and hidden after logout');
+console.log('✓ LOGOUT successfully stopped timer and restored START MISSION view.');
 
 console.log('\n===========================================================');
 console.log('ALL DOM INTERACTION TESTS PASSED 100%!');

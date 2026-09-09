@@ -96,10 +96,14 @@ console.log('✓ Step 3: Authenticated as Samuel Reyes -> Dashboard active');
 // Action 4: Logout from Dashboard
 testState.sessionActive = false;
 testState.view = 'login';
+testState.missionStarted = false;
+testState.timerRunning = false;
+testState.timerSecondsLeft = 1200;
 assert.strictEqual(testState.sessionActive, false, 'Logged out');
 assert.strictEqual(testState.view, 'login', 'Returned to login view');
-assert.strictEqual(testState.missionStarted, true, 'Timer continues running on login page per 2.png');
-console.log('✓ Step 4: Click LOGOUT -> Returned to login screen with active countdown');
+assert.strictEqual(testState.missionStarted, false, 'Timer stopped and reset to START MISSION on logout');
+assert.strictEqual(testState.timerRunning, false, 'Timer running state is false on logout');
+console.log('✓ Step 4: Click LOGOUT -> Timer stopped and reset to START MISSION view');
 
 // Action 5: Timeout reached (20 minutes expire)
 testState.timerSecondsLeft = 0;
